@@ -29,9 +29,10 @@ class Mason::Buildpack
   def compile(app, env_file=nil, cache=nil)
     cache_dir = cache || "#{app}/.git/cache"
     puts "  caching in #{cache_dir}"
+
     compile_dir = Dir.mktmpdir
-    FileUtils.rm_rf compile_dir
-    FileUtils.cp_r app, compile_dir, :preserve => true
+    copy_recursive(app, compile_dir)
+
     FileUtils.mkdir_p cache_dir
     Dir.chdir(compile_dir) do
       IO.popen(%{ #{script("compile")} "#{compile_dir}" "#{cache_dir}" }) do |io|
@@ -94,6 +95,13 @@ private
 
   def script(name)
     File.join(dir, "bin", name)
+  end
+
+  def copy_recursive(src, dest)
+    FileUtils.rm_rf(dest)
+    output = `cp -PRr #{ src } #{ dest }`
+
+    fail output unless $?.to_i.zero?
   end
 end
 
