@@ -100,7 +100,6 @@ class Mason::CLI < Thor
       when :img then
         raise "img not supported yet"
       when :dir then
-        FileUtils.rm_rf output
         Mason::Buildpacks.copy_recursive compile_dir, output
       else
         raise "no such output type: #{type}"
