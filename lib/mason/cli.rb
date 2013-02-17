@@ -1,5 +1,4 @@
 require "mason"
-require "mason/buildpack"
 require "mason/buildpacks"
 require "mason/stacks"
 require "mason/version"
@@ -60,10 +59,6 @@ class Mason::CLI < Thor
       compile_dir = File.expand_path("~/.mason/share/#{stack}/app")
       mason_dir = File.expand_path("~/.mason/share/#{stack}/mason")
 
-      FileUtils.rm_rf buildpacks_dir
-      FileUtils.rm_rf compile_dir
-      FileUtils.rm_rf mason_dir
-
       Mason::Buildpacks.copy_recursive(File.expand_path("~/.mason/buildpacks"), buildpacks_dir)
       Mason::Buildpacks.copy_recursive(File.expand_path("../../../", __FILE__), mason_dir)
       Mason::Buildpacks.copy_recursive(app, compile_dir)
@@ -76,9 +71,7 @@ class Mason::CLI < Thor
         /usr/bin/env ruby -rubygems /share/mason/bin/mason build #{mason_args}
       COMMAND
 
-      FileUtils.rm_rf output
-      Mason::Buildpacks.copy_recursive(File.expand_path("~/.mason/share/#{stack}/output"), output,
-                     :preserve => true)
+      Mason::Buildpacks.copy_recursive(File.expand_path("~/.mason/share/#{stack}/output"), output)
 
       puts "* packaging"
       puts "  = type: #{type}"

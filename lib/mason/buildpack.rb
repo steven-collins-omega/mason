@@ -97,6 +97,5 @@ private
   def script(name)
     File.join(dir, "bin", name)
   end
-
 end
 
