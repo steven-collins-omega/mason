@@ -58,6 +58,14 @@ class Mason::Buildpacks
     end
   end
 
+  def self.copy_recursive(src, dest)
+    FileUtils.rm_rf(dest)
+    output = `cp -PRr #{ src } #{ dest }`
+
+    fail output unless $?.to_i.zero?
+  end
+
+
   def self.detect(app, buildpack_url)
     if buildpack_url
       puts "Using $BUILDPACK_URL: #{buildpack_url}"

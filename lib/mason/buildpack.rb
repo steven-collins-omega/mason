@@ -1,4 +1,5 @@
 require "mason"
+require "mason/buildpacks"
 require "tmpdir"
 require "yaml"
 require "foreman/engine"
@@ -31,7 +32,7 @@ class Mason::Buildpack
     puts "  caching in #{cache_dir}"
 
     compile_dir = Dir.mktmpdir
-    copy_recursive(app, compile_dir)
+    Mason::Buildpacks.copy_recursive(app, compile_dir)
 
     FileUtils.mkdir_p cache_dir
     Dir.chdir(compile_dir) do
@@ -97,11 +98,5 @@ private
     File.join(dir, "bin", name)
   end
 
-  def copy_recursive(src, dest)
-    FileUtils.rm_rf(dest)
-    output = `cp -PRr #{ src } #{ dest }`
-
-    fail output unless $?.to_i.zero?
-  end
 end
 
